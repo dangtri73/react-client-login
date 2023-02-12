@@ -2,9 +2,18 @@ import { initializeApp } from "firebase/app";
 import { getAuth, GoogleAuthProvider, signInWithPopup } from "firebase/auth"
 import axios from "axios"
 
-const fetchData = (data) => {
-    return axios.post("http://app.dev.api.hftvn.com/life-plan/api/v1/login")
-        .then((response) => console.log(response.data))
+const fetchData = (accessToken) => {
+    return axios.post("http://localhost:4000/gpt-chat/api/v1/user/signin", 
+    {
+        type: 'GOOGLE', 
+        idToken: accessToken
+    })
+        .then((response) => {
+            console.log(response?.data?.data?.doc)
+            localStorage.setItem("isSignup", response?.data?.data?.doc?.isSignup)
+            localStorage.setItem("token", response?.data?.data?.doc?.token)
+            localStorage.setItem("user", JSON.stringify(response?.data?.data?.doc?.user))
+        })
         .catch(e => {console.log(e.message);});
 }
 
